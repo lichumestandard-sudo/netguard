@@ -27,3 +27,28 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
+## Usage
+NetGuard uses a modular command-line interface:
+```bash
+# View help
+python netguard/cli.py --help
+
+# Run a port scan
+python netguard/cli.py scan -t 192.168.1.1 -p 22,80,443
+
+# Run an ARP scan
+python netguard/cli.py arp -t 192.168.1.0/24
+
+## Usage
+NetGuard uses a modular command-line interface:
+```bash
+# View help
+python netguard/cli.py --help
+
+# Run a port scan
+python netguard/cli.py scan -t 192.168.1.1 -p 22,80,443
+
+# Run an ARP scan
+python netguard/cli.py arp -t 192.168.1.0/24
+```
