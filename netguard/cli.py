@@ -8,6 +8,7 @@ import sys
 
 from netguard.discovery import discover_hosts
 from netguard.scanner import scan_ports
+from netguard.banner import grab_banner
 
 
 def build_parser():
@@ -60,6 +61,10 @@ def main():
     elif args.command == "scan":
         open_ports = scan_ports(args.target, args.ports)
         print(f"\n[*] Scan complete. {len(open_ports)} open port(s) found.")
+
+    elif args.command == "banner":
+        result = grab_banner(args.target, args.port)
+        print(f"[{args.target}:{args.port}] {result}")
 
     else:
         print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
