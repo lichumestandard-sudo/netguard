@@ -14,3 +14,5 @@ All notable changes to this project are documented here.
 - Scan command wired into CLI
 - Banner grabbing for service fingerprinting
 - Banner command wired into CLI
+- ARP scanner for local network device discovery (MAC addresses)
+- ARP command wired into CLI
