@@ -9,18 +9,24 @@ banner grabbing, ARP scanning, and packet sniffing — built as part of my
 Cybersecurity elective coursework.
 
 ## Status
-🚧 In active development. See [CHANGELOG.md](CHANGELOG.md) for progress.
+🚧 In active development. All 5 core features are implemented and tested.
+See [CHANGELOG.md](CHANGELOG.md) for full progress history.
 
 ## Features
 - [x] Host discovery (multithreaded ping sweep)
 - [x] TCP port scanner (multithreaded, with service name mapping)
-- [ ] Banner grabbing
-- [ ] ARP scanner
-- [ ] Packet sniffer
+- [x] Banner grabbing (service fingerprinting)
+- [x] ARP scanner (local network device discovery with MAC addresses)
+- [x] Packet sniffer (live capture with protocol summaries)
 - [ ] HTML/JSON report generation
+- [ ] Unit tests
+
+## Requirements
+- Python 3.10+
+- Npcap (Windows only, required for ARP scanning and packet sniffing) - https://npcap.com/#download
+- Administrator/root privileges (required for ARP scanning and packet sniffing)
 
 ## Setup
-
 ```bash
 git clone https://github.com/YOUR_USERNAME/netguard.git
 cd netguard
@@ -32,13 +38,12 @@ pip install -r requirements.txt
 ## Usage
 
 Run commands as a module from the project root:
-
 ```bash
 python -m netguard.cli --help
 ```
 
 ### Host Discovery
-Sweep a subnet for live hosts:
+Sweep a subnet to find live hosts:
 ```bash
 python -m netguard.cli discover 192.168.0.0/24
 ```
@@ -49,6 +54,26 @@ Scan a target host for open TCP ports:
 python -m netguard.cli scan 192.168.0.1 -p 1-1024
 python -m netguard.cli scan 192.168.0.1 -p 80,443,8080
 ```
+
+### Banner Grabbing
+Grab the service banner from an open port:
+```bash
+python -m netguard.cli banner 192.168.0.1 80
+```
+
+### ARP Scanning
+Discover devices on the local network with their MAC addresses:
+```bash
+python -m netguard.cli arp 192.168.0.0/24
+```
+> Requires Administrator/root privileges and Npcap (Windows).
+
+### Packet Sniffing
+Capture and summarize live packets on a network interface:
+```bash
+python -m netguard.cli sniff -c 20
+```
+> Requires Administrator/root privileges and Npcap (Windows).
 
 ## ⚠️ Legal Notice
 Only use NetGuard against hosts and networks you own or have explicit
@@ -62,8 +87,15 @@ netguard/
 │   ├── __init__.py
 │   ├── cli.py          # CLI entry point (argparse)
 │   ├── discovery.py    # Host discovery (ping sweep)
-│   └── scanner.py      # TCP port scanner
+│   ├── scanner.py      # TCP port scanner
+│   ├── banner.py       # Banner grabbing
+│   ├── arp_scan.py     # ARP scanner
+│   └── sniffer.py      # Packet sniffer
 ├── CHANGELOG.md
 ├── README.md
+├── requirements.txt
 └── .editorconfig
 ```
+
+## License
+MIT
