@@ -10,6 +10,7 @@ from netguard.discovery import discover_hosts
 from netguard.scanner import scan_ports
 from netguard.banner import grab_banner
 from netguard.arp_scan import arp_scan
+from netguard.sniffer import start_sniffer
 
 
 def build_parser():
@@ -43,6 +44,7 @@ def build_parser():
     # packet sniffer
     sniff_parser = subparsers.add_parser("sniff", help="Sniff packets on a network interface")
     sniff_parser.add_argument("-i", "--interface", help="Network interface to sniff on")
+    sniff_parser.add_argument("-c", "--count", type=int, default=20, help="Number of packets to capture")
 
     return parser
 
@@ -70,6 +72,9 @@ def main():
     elif args.command == "arp":
         devices = arp_scan(args.target)
         print(f"\n[*] ARP scan complete. {len(devices)} device(s) found.")
+
+    elif args.command == "sniff":
+        start_sniffer(interface=args.interface, count=args.count)
 
     else:
         print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
