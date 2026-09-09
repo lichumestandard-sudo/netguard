@@ -11,44 +11,59 @@ Cybersecurity elective coursework.
 ## Status
 🚧 In active development. See [CHANGELOG.md](CHANGELOG.md) for progress.
 
-## Features (in progress)
-- [ ] Host discovery (ping sweep)
-- [ ] TCP port scanner
+## Features
+- [x] Host discovery (multithreaded ping sweep)
+- [x] TCP port scanner (multithreaded, with service name mapping)
 - [ ] Banner grabbing
 - [ ] ARP scanner
 - [ ] Packet sniffer
 - [ ] HTML/JSON report generation
 
 ## Setup
+
 ```bash
 git clone https://github.com/YOUR_USERNAME/netguard.git
 cd netguard
-python3 -m venv venv
-source venv/bin/activate
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
 ## Usage
-NetGuard uses a modular command-line interface:
+
+Run commands as a module from the project root:
+
 ```bash
-# View help
-python netguard/cli.py --help
+python -m netguard.cli --help
+```
 
-# Run a port scan
-python netguard/cli.py scan -t 192.168.1.1 -p 22,80,443
-
-# Run an ARP scan
-python netguard/cli.py arp -t 192.168.1.0/24
-
-## Usage
-NetGuard uses a modular command-line interface:
+### Host Discovery
+Sweep a subnet for live hosts:
 ```bash
-# View help
-python netguard/cli.py --help
+python -m netguard.cli discover 192.168.0.0/24
+```
 
-# Run a port scan
-python netguard/cli.py scan -t 192.168.1.1 -p 22,80,443
+### Port Scanning
+Scan a target host for open TCP ports:
+```bash
+python -m netguard.cli scan 192.168.0.1 -p 1-1024
+python -m netguard.cli scan 192.168.0.1 -p 80,443,8080
+```
 
-# Run an ARP scan
-python netguard/cli.py arp -t 192.168.1.0/24
+## ⚠️ Legal Notice
+Only use NetGuard against hosts and networks you own or have explicit
+permission to test. Unauthorized scanning of devices you don't control
+may be illegal in your jurisdiction.
+
+## Project Structure
+```
+netguard/
+├── netguard/
+│   ├── __init__.py
+│   ├── cli.py          # CLI entry point (argparse)
+│   ├── discovery.py     # Host discovery (ping sweep)
+│   └── scanner.py       # TCP port scanner
+├── CHANGELOG.md
+├── README.md
+└── .editorconfig
 ```
