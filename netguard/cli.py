@@ -6,6 +6,8 @@ Entry point for the network security toolkit.
 import argparse
 import sys
 
+from netguard.discovery import discover_hosts
+
 
 def build_parser():
     parser = argparse.ArgumentParser(
@@ -50,7 +52,11 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
+    if args.command == "discover":
+        live_hosts = discover_hosts(args.target)
+        print(f"\n[*] Discovery complete. {len(live_hosts)} host(s) up.")
+    else:
+        print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
 
 
 if __name__ == "__main__":
