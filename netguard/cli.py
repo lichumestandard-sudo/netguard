@@ -7,6 +7,7 @@ import argparse
 import sys
 
 from netguard.discovery import discover_hosts
+from netguard.scanner import scan_ports
 
 
 def build_parser():
@@ -55,6 +56,11 @@ def main():
     if args.command == "discover":
         live_hosts = discover_hosts(args.target)
         print(f"\n[*] Discovery complete. {len(live_hosts)} host(s) up.")
+
+    elif args.command == "scan":
+        open_ports = scan_ports(args.target, args.ports)
+        print(f"\n[*] Scan complete. {len(open_ports)} open port(s) found.")
+
     else:
         print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
 
