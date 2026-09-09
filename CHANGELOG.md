@@ -16,3 +16,5 @@ All notable changes to this project are documented here.
 - Banner command wired into CLI
 - ARP scanner for local network device discovery (MAC addresses)
 - ARP command wired into CLI
+- Packet sniffer with per-packet protocol summaries
+- Sniff command wired into CLI (with --count option)
