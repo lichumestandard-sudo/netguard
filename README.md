@@ -61,8 +61,8 @@ netguard/
 ├── netguard/
 │   ├── __init__.py
 │   ├── cli.py          # CLI entry point (argparse)
-│   ├── discovery.py     # Host discovery (ping sweep)
-│   └── scanner.py       # TCP port scanner
+│   ├── discovery.py    # Host discovery (ping sweep)
+│   └── scanner.py      # TCP port scanner
 ├── CHANGELOG.md
 ├── README.md
 └── .editorconfig
