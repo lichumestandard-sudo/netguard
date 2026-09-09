@@ -10,3 +10,5 @@ All notable changes to this project are documented here.
 - --version flag
 - Multithreaded ping sweep for host discovery
 - Discover command wired into CLI
+- Multithreaded TCP port scanner with service name mapping
+- Scan command wired into CLI
