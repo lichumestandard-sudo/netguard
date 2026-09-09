@@ -9,6 +9,7 @@ import sys
 from netguard.discovery import discover_hosts
 from netguard.scanner import scan_ports
 from netguard.banner import grab_banner
+from netguard.arp_scan import arp_scan
 
 
 def build_parser():
@@ -65,6 +66,10 @@ def main():
     elif args.command == "banner":
         result = grab_banner(args.target, args.port)
         print(f"[{args.target}:{args.port}] {result}")
+
+    elif args.command == "arp":
+        devices = arp_scan(args.target)
+        print(f"\n[*] ARP scan complete. {len(devices)} device(s) found.")
 
     else:
         print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
