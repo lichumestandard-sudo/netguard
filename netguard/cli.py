@@ -12,6 +12,9 @@ def build_parser():
         prog="netguard",
         description="NetGuard - A Python network security toolkit"
     )
+    parser.add_argument(
+        "-v", "--version", action="version", version="NetGuard 0.1.0"
+    )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # host discovery
