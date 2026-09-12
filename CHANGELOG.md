@@ -27,9 +27,11 @@ All notable changes to this project are documented here.
 - Logging integrated into all CLI commands for audit trail
 - Config file support (netguard.cfg) with --init-config flag
 - Scan and sniff commands now read defaults from config
+- pyproject.toml for pip-installable packaging with netguard console command
 
 ### Changed
 - README overhauled with full usage guide for all 5 core features
+- README setup section documents pip install path
 
 ### Removed
 - Unused early draft scaffolding (netguard/scanners, netguard/utils)
