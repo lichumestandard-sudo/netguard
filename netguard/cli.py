@@ -11,6 +11,7 @@ from netguard.scanner import scan_ports
 from netguard.banner import grab_banner
 from netguard.arp_scan import arp_scan
 from netguard.sniffer import start_sniffer
+from netguard.report import generate_report
 from netguard.validators import (
     ValidationError,
     validate_ip,
@@ -18,6 +19,15 @@ from netguard.validators import (
     validate_port,
     validate_port_range,
 )
+
+
+def add_output_args(subparser):
+    """Add shared --output/--format flags to a subcommand parser."""
+    subparser.add_argument("-o", "--output", help="Save results to a file")
+    subparser.add_argument(
+        "-f", "--format", choices=["json", "html"], default="json",
+        help="Report format when using --output (default: json)"
+    )
 
 
 def build_parser():
@@ -33,20 +43,24 @@ def build_parser():
     # host discovery
     discover_parser = subparsers.add_parser("discover", help="Discover live hosts on a network")
     discover_parser.add_argument("target", help="Target subnet, e.g. 192.168.1.0/24")
+    add_output_args(discover_parser)
 
     # port scan
     scan_parser = subparsers.add_parser("scan", help="Scan ports on a target host")
     scan_parser.add_argument("target", help="Target IP address")
     scan_parser.add_argument("-p", "--ports", default="1-1024", help="Port range, e.g. 1-1024")
+    add_output_args(scan_parser)
 
     # banner grab
     banner_parser = subparsers.add_parser("banner", help="Grab service banners from open ports")
     banner_parser.add_argument("target", help="Target IP address")
     banner_parser.add_argument("port", type=int, help="Target port")
+    add_output_args(banner_parser)
 
     # ARP scan
     arp_parser = subparsers.add_parser("arp", help="Perform an ARP scan on the local network")
     arp_parser.add_argument("target", help="Target subnet, e.g. 192.168.1.0/24")
+    add_output_args(arp_parser)
 
     # packet sniffer
     sniff_parser = subparsers.add_parser("sniff", help="Sniff packets on a network interface")
@@ -69,23 +83,31 @@ def main():
             validate_subnet(args.target)
             live_hosts = discover_hosts(args.target)
             print(f"\n[*] Discovery complete. {len(live_hosts)} host(s) up.")
+            if args.output:
+                generate_report({"target": args.target, "live_hosts": live_hosts}, args.output, args.format)
 
         elif args.command == "scan":
             validate_ip(args.target)
             validate_port_range(args.ports)
             open_ports = scan_ports(args.target, args.ports)
             print(f"\n[*] Scan complete. {len(open_ports)} open port(s) found.")
+            if args.output:
+                generate_report({"target": args.target, "open_ports": open_ports}, args.output, args.format)
 
         elif args.command == "banner":
             validate_ip(args.target)
             validate_port(args.port)
             result = grab_banner(args.target, args.port)
             print(f"[{args.target}:{args.port}] {result}")
+            if args.output:
+                generate_report({"target": args.target, "port": args.port, "banner": result}, args.output, args.format)
 
         elif args.command == "arp":
             validate_subnet(args.target)
             devices = arp_scan(args.target)
             print(f"\n[*] ARP scan complete. {len(devices)} device(s) found.")
+            if args.output:
+                generate_report({"target": args.target, "devices": devices}, args.output, args.format)
 
         elif args.command == "sniff":
             start_sniffer(interface=args.interface, count=args.count)
