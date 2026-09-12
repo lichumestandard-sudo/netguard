@@ -9,3 +9,6 @@ reports/*.html
 logs/
 *.log
 netguard.cfg
+*.egg-info/
+scan_report.json
+scan_report.html
