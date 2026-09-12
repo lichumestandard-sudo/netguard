@@ -25,6 +25,8 @@ All notable changes to this project are documented here.
 - Unit test suite (pytest) for validators and port range parsing
 - Logging module with daily rotating file logs and console warnings
 - Logging integrated into all CLI commands for audit trail
+- Config file support (netguard.cfg) with --init-config flag
+- Scan and sniff commands now read defaults from config
 
 ### Changed
 - README overhauled with full usage guide for all 5 core features
