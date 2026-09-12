@@ -13,6 +13,7 @@ from netguard.arp_scan import arp_scan
 from netguard.sniffer import start_sniffer
 from netguard.report import generate_report
 from netguard.logger import setup_logger
+from netguard.config import load_config, generate_default_config_file
 from netguard.validators import (
     ValidationError,
     validate_ip,
@@ -22,6 +23,7 @@ from netguard.validators import (
 )
 
 logger = setup_logger()
+config = load_config()
 
 
 def add_output_args(subparser):
@@ -41,15 +43,20 @@ def build_parser():
     parser.add_argument(
         "-v", "--version", action="version", version="NetGuard 0.1.0"
     )
+    parser.add_argument(
+        "--init-config", action="store_true",
+        help="Generate a default netguard.cfg file and exit"
+    )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     discover_parser = subparsers.add_parser("discover", help="Discover live hosts on a network")
     discover_parser.add_argument("target", help="Target subnet, e.g. 192.168.1.0/24")
     add_output_args(discover_parser)
 
+    default_ports = config.get("scan", "default_ports", fallback="1-1024")
     scan_parser = subparsers.add_parser("scan", help="Scan ports on a target host")
     scan_parser.add_argument("target", help="Target IP address")
-    scan_parser.add_argument("-p", "--ports", default="1-1024", help="Port range, e.g. 1-1024")
+    scan_parser.add_argument("-p", "--ports", default=default_ports, help=f"Port range (default from config: {default_ports})")
     add_output_args(scan_parser)
 
     banner_parser = subparsers.add_parser("banner", help="Grab service banners from open ports")
@@ -61,9 +68,10 @@ def build_parser():
     arp_parser.add_argument("target", help="Target subnet, e.g. 192.168.1.0/24")
     add_output_args(arp_parser)
 
+    default_count = config.getint("sniff", "default_count", fallback=20)
     sniff_parser = subparsers.add_parser("sniff", help="Sniff packets on a network interface")
     sniff_parser.add_argument("-i", "--interface", help="Network interface to sniff on")
-    sniff_parser.add_argument("-c", "--count", type=int, default=20, help="Number of packets to capture")
+    sniff_parser.add_argument("-c", "--count", type=int, default=default_count, help=f"Number of packets (default from config: {default_count})")
 
     return parser
 
@@ -71,6 +79,10 @@ def build_parser():
 def main():
     parser = build_parser()
     args = parser.parse_args()
+
+    if args.init_config:
+        generate_default_config_file()
+        sys.exit(0)
 
     if not args.command:
         parser.print_help()
