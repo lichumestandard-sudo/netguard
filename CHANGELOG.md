@@ -18,3 +18,11 @@ All notable changes to this project are documented here.
 - ARP command wired into CLI
 - Packet sniffer with per-packet protocol summaries
 - Sniff command wired into CLI (with --count option)
+- Input validation module for IPs, subnets, and ports
+- Graceful error handling across all CLI commands (no more raw tracebacks)
+
+### Changed
+- README overhauled with full usage guide for all 5 core features
+
+### Removed
+- Unused early draft scaffolding (netguard/scanners, netguard/utils)
