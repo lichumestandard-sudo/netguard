@@ -12,6 +12,7 @@ from netguard.banner import grab_banner
 from netguard.arp_scan import arp_scan
 from netguard.sniffer import start_sniffer
 from netguard.report import generate_report
+from netguard.logger import setup_logger
 from netguard.validators import (
     ValidationError,
     validate_ip,
@@ -19,6 +20,8 @@ from netguard.validators import (
     validate_port,
     validate_port_range,
 )
+
+logger = setup_logger()
 
 
 def add_output_args(subparser):
@@ -40,29 +43,24 @@ def build_parser():
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    # host discovery
     discover_parser = subparsers.add_parser("discover", help="Discover live hosts on a network")
     discover_parser.add_argument("target", help="Target subnet, e.g. 192.168.1.0/24")
     add_output_args(discover_parser)
 
-    # port scan
     scan_parser = subparsers.add_parser("scan", help="Scan ports on a target host")
     scan_parser.add_argument("target", help="Target IP address")
     scan_parser.add_argument("-p", "--ports", default="1-1024", help="Port range, e.g. 1-1024")
     add_output_args(scan_parser)
 
-    # banner grab
     banner_parser = subparsers.add_parser("banner", help="Grab service banners from open ports")
     banner_parser.add_argument("target", help="Target IP address")
     banner_parser.add_argument("port", type=int, help="Target port")
     add_output_args(banner_parser)
 
-    # ARP scan
     arp_parser = subparsers.add_parser("arp", help="Perform an ARP scan on the local network")
     arp_parser.add_argument("target", help="Target subnet, e.g. 192.168.1.0/24")
     add_output_args(arp_parser)
 
-    # packet sniffer
     sniff_parser = subparsers.add_parser("sniff", help="Sniff packets on a network interface")
     sniff_parser.add_argument("-i", "--interface", help="Network interface to sniff on")
     sniff_parser.add_argument("-c", "--count", type=int, default=20, help="Number of packets to capture")
@@ -78,10 +76,13 @@ def main():
         parser.print_help()
         sys.exit(1)
 
+    logger.info(f"Command started: {args.command} (args: {vars(args)})")
+
     try:
         if args.command == "discover":
             validate_subnet(args.target)
             live_hosts = discover_hosts(args.target)
+            logger.info(f"Discovery finished: {len(live_hosts)} host(s) up on {args.target}")
             print(f"\n[*] Discovery complete. {len(live_hosts)} host(s) up.")
             if args.output:
                 generate_report({"target": args.target, "live_hosts": live_hosts}, args.output, args.format)
@@ -90,6 +91,7 @@ def main():
             validate_ip(args.target)
             validate_port_range(args.ports)
             open_ports = scan_ports(args.target, args.ports)
+            logger.info(f"Scan finished: {len(open_ports)} open port(s) on {args.target}")
             print(f"\n[*] Scan complete. {len(open_ports)} open port(s) found.")
             if args.output:
                 generate_report({"target": args.target, "open_ports": open_ports}, args.output, args.format)
@@ -98,6 +100,7 @@ def main():
             validate_ip(args.target)
             validate_port(args.port)
             result = grab_banner(args.target, args.port)
+            logger.info(f"Banner grabbed from {args.target}:{args.port}")
             print(f"[{args.target}:{args.port}] {result}")
             if args.output:
                 generate_report({"target": args.target, "port": args.port, "banner": result}, args.output, args.format)
@@ -105,26 +108,33 @@ def main():
         elif args.command == "arp":
             validate_subnet(args.target)
             devices = arp_scan(args.target)
+            logger.info(f"ARP scan finished: {len(devices)} device(s) found on {args.target}")
             print(f"\n[*] ARP scan complete. {len(devices)} device(s) found.")
             if args.output:
                 generate_report({"target": args.target, "devices": devices}, args.output, args.format)
 
         elif args.command == "sniff":
+            logger.info(f"Sniffing started (interface={args.interface}, count={args.count})")
             start_sniffer(interface=args.interface, count=args.count)
+            logger.info("Sniffing finished")
 
         else:
             print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
 
     except ValidationError as e:
+        logger.warning(f"Validation error: {e}")
         print(f"[!] Invalid input: {e}")
         sys.exit(1)
     except PermissionError as e:
+        logger.error(f"Permission error: {e}")
         print(f"[!] Permission error: {e}")
         sys.exit(1)
     except OSError as e:
+        logger.error(f"OS/network error: {e}")
         print(f"[!] Network/system error: {e}")
         sys.exit(1)
     except KeyboardInterrupt:
+        logger.info("Interrupted by user")
         print("\n[*] Interrupted by user. Exiting.")
         sys.exit(0)
 
