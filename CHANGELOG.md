@@ -28,10 +28,12 @@ All notable changes to this project are documented here.
 - Config file support (netguard.cfg) with --init-config flag
 - Scan and sniff commands now read defaults from config
 - pyproject.toml for pip-installable packaging with netguard console command
+- CONTRIBUTING.md with setup and contribution guidelines
 
 ### Changed
 - README overhauled with full usage guide for all 5 core features
 - README setup section documents pip install path
+- LICENSE finalized with correct copyright holder
 
 ### Removed
 - Unused early draft scaffolding (netguard/scanners, netguard/utils)
