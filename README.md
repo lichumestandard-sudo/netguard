@@ -27,6 +27,16 @@ See [CHANGELOG.md](CHANGELOG.md) for full progress history.
 - Administrator/root privileges (required for ARP scanning and packet sniffing)
 
 ## Setup
+
+Install as a package (recommended, gives you a `netguard` command):
+```bash
+git clone https://github.com/lichumestandard-sudo/netguard.git
+cd netguard
+pip install -e .
+netguard --help
+```
+
+Or run without installing:
 ```bash
 git clone https://github.com/YOUR_USERNAME/netguard.git
 cd netguard
