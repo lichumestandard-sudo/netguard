@@ -29,6 +29,7 @@ All notable changes to this project are documented here.
 - Scan and sniff commands now read defaults from config
 - pyproject.toml for pip-installable packaging with netguard console command
 - CONTRIBUTING.md with setup and contribution guidelines
+- Example HTML report screenshot in README
 
 ### Changed
 - README overhauled with full usage guide for all 5 core features
