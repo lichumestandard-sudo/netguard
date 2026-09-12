@@ -85,6 +85,10 @@ python -m netguard.cli sniff -c 20
 ```
 > Requires Administrator/root privileges and Npcap (Windows).
 
+## Example Report Output
+
+![HTML Report Example](screenshots/html_report_example.png)
+
 ## ⚠️ Legal Notice
 Only use NetGuard against hosts and networks you own or have explicit
 permission to test. Unauthorized scanning of devices you don't control
