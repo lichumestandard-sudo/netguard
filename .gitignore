@@ -6,3 +6,5 @@ venv/
 reports/*.json
 reports/*.html
 .DS_Store
+logs/
+*.log
