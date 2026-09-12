@@ -22,6 +22,7 @@ All notable changes to this project are documented here.
 - Graceful error handling across all CLI commands (no more raw tracebacks)
 - JSON and HTML report generator
 - --output/--format flags for discover, scan, banner, and arp commands
+- Unit test suite (pytest) for validators and port range parsing
 
 ### Changed
 - README overhauled with full usage guide for all 5 core features
