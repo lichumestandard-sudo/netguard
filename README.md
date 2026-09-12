@@ -1,6 +1,6 @@
 # NetGuard 🛡️
 
-![Status](https://img.shields.io/badge/status-in%20development-yellow)
+![Status](https://img.shields.io/badge/status-v1.0.0%20released-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -9,8 +9,8 @@ banner grabbing, ARP scanning, and packet sniffing — built as part of my
 Cybersecurity elective coursework.
 
 ## Status
-🚧 In active development. All 5 core features are implemented and tested.
-See [CHANGELOG.md](CHANGELOG.md) for full progress history.
+✅ v1.0.0 released. All 5 core features are implemented and tested.
+See [CHANGELOG.md](CHANGELOG.md) for full release history.
 
 ## Features
 - [x] Host discovery (multithreaded ping sweep)
