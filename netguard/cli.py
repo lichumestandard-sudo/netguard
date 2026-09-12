@@ -11,6 +11,13 @@ from netguard.scanner import scan_ports
 from netguard.banner import grab_banner
 from netguard.arp_scan import arp_scan
 from netguard.sniffer import start_sniffer
+from netguard.validators import (
+    ValidationError,
+    validate_ip,
+    validate_subnet,
+    validate_port,
+    validate_port_range,
+)
 
 
 def build_parser():
@@ -57,27 +64,47 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    if args.command == "discover":
-        live_hosts = discover_hosts(args.target)
-        print(f"\n[*] Discovery complete. {len(live_hosts)} host(s) up.")
+    try:
+        if args.command == "discover":
+            validate_subnet(args.target)
+            live_hosts = discover_hosts(args.target)
+            print(f"\n[*] Discovery complete. {len(live_hosts)} host(s) up.")
 
-    elif args.command == "scan":
-        open_ports = scan_ports(args.target, args.ports)
-        print(f"\n[*] Scan complete. {len(open_ports)} open port(s) found.")
+        elif args.command == "scan":
+            validate_ip(args.target)
+            validate_port_range(args.ports)
+            open_ports = scan_ports(args.target, args.ports)
+            print(f"\n[*] Scan complete. {len(open_ports)} open port(s) found.")
 
-    elif args.command == "banner":
-        result = grab_banner(args.target, args.port)
-        print(f"[{args.target}:{args.port}] {result}")
+        elif args.command == "banner":
+            validate_ip(args.target)
+            validate_port(args.port)
+            result = grab_banner(args.target, args.port)
+            print(f"[{args.target}:{args.port}] {result}")
 
-    elif args.command == "arp":
-        devices = arp_scan(args.target)
-        print(f"\n[*] ARP scan complete. {len(devices)} device(s) found.")
+        elif args.command == "arp":
+            validate_subnet(args.target)
+            devices = arp_scan(args.target)
+            print(f"\n[*] ARP scan complete. {len(devices)} device(s) found.")
 
-    elif args.command == "sniff":
-        start_sniffer(interface=args.interface, count=args.count)
+        elif args.command == "sniff":
+            start_sniffer(interface=args.interface, count=args.count)
 
-    else:
-        print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
+        else:
+            print(f"[NetGuard] Command '{args.command}' recognized. Implementation coming soon.")
+
+    except ValidationError as e:
+        print(f"[!] Invalid input: {e}")
+        sys.exit(1)
+    except PermissionError as e:
+        print(f"[!] Permission error: {e}")
+        sys.exit(1)
+    except OSError as e:
+        print(f"[!] Network/system error: {e}")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        print("\n[*] Interrupted by user. Exiting.")
+        sys.exit(0)
 
 
 if __name__ == "__main__":
