@@ -41,7 +41,7 @@ def build_parser():
         description="NetGuard - A Python network security toolkit"
     )
     parser.add_argument(
-        "-v", "--version", action="version", version="NetGuard 0.1.0"
+        "-v", "--version", action="version", version="NetGuard 1.0.0"
     )
     parser.add_argument(
         "--init-config", action="store_true",

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "netguard"
-version = "0.1.0"
+version = "1.0.0"
 description = "A Python-based network security toolkit for host discovery, port scanning, banner grabbing, ARP scanning, and packet sniffing."
 readme = "README.md"
 requires-python = ">=3.10"
