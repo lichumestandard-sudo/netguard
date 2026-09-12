@@ -20,6 +20,8 @@ All notable changes to this project are documented here.
 - Sniff command wired into CLI (with --count option)
 - Input validation module for IPs, subnets, and ports
 - Graceful error handling across all CLI commands (no more raw tracebacks)
+- JSON and HTML report generator
+- --output/--format flags for discover, scan, banner, and arp commands
 
 ### Changed
 - README overhauled with full usage guide for all 5 core features
